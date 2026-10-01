@@ -2,6 +2,12 @@ name: ORVEN trusted CI
 
 on:
   workflow_call:
+    inputs:
+      runner:
+        description: "Runner label for this caller; existing callers retain orven-wsl"
+        required: false
+        type: string
+        default: orven-wsl
 
 permissions: {}
 
@@ -16,7 +22,7 @@ jobs:
     name: trusted verification
     permissions:
       contents: read
-    runs-on: [orven-wsl]
+    runs-on: ${{ inputs.runner }}
     timeout-minutes: 30
     steps:
       - name: Checkout exact caller commit
@@ -50,7 +56,7 @@ jobs:
     if: ${{ always() }}
     needs: [verify]
     permissions: {}
-    runs-on: [orven-wsl]
+    runs-on: ${{ inputs.runner }}
     timeout-minutes: 5
     steps:
       - name: Require every dependency to succeed
